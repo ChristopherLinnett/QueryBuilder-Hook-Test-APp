@@ -1,0 +1,13 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "svg.preview.background": "transparent",
+  "prettier.printWidth": 150,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.folding": false,
+  "editor.wordWrapColumn": 150
+}
