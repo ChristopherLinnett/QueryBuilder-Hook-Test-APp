@@ -1,11 +1,11 @@
 import { InfiniteData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { PokedexDatasource } from "../../data/datasource/pokedexDatasource";
-import PokemonListResponse from "../../models/pokemonListResponse";
 import { CustomException } from "../../../../core/errors/customExceptions";
+import { PokedexDatasource } from "../../data/datasource/pokedexDatasource";
 import PageParams from "../../models/pageParams";
 import { Pokemon } from "../../models/pokemon";
-import { GetPokemonListQuery } from "../usecases/getPokemonList";
+import PokemonListResponse from "../../models/pokemonListResponse";
 import { GetPokemonQuery } from "../usecases/getPokemon";
+import { GetPokemonListQuery } from "../usecases/getPokemonList";
 
 abstract class PokedexRepo {
     abstract getPokemonList: GetPokemonListQuery;
@@ -23,7 +23,7 @@ export class PokedexRepoImplementation implements PokedexRepo {
             PageParams
         >({
             queryKey: ["pokemonList"],
-            initialPageParam: { limit: 20, offset: 0 },
+            initialPageParam: { limit: 200, offset: 0 },
             queryFn: async ({ pageParam }) =>
                 this.datasource.getPokemonList(pageParam.limit, pageParam.offset),
             getNextPageParam: (lastPage) => {
