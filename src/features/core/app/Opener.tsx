@@ -33,27 +33,20 @@ const Opener: React.FC = () => {
               ) : (
                 <HookBuilder hook={useState} params={undefined}>
                   {([selectedPokemon, setSelectedPokemon]) => {
+                    const togglePokmeon = (pokemonName: string) => selectedPokemon === pokemonName ? setSelectedPokemon(undefined) : setSelectedPokemon(pokemonName);
                     return (
                       <>
                         {pokemonToDisplay(pokemonList!)?.map((pokemonName, index) => (
                           <QueryBuilder key={pokemonName} useQuery={getPokemon} params={pokemonName}>
                             {({ data: pokemon, isPending: pokemonIsLoading }) => (
-                              <button
-                                onClick={() => setSelectedPokemon(pokemonName)}
-                                className={
-                                  (pokemonName === selectedPokemon ? "bg-red-500" : BACKGROUND_COLOURS[index % BACKGROUND_COLOURS.length]) +
-                                  " flex items-center gap-4 w-fit"
-                                }
-                              >
-                                {pokemonIsLoading ? (
-                                  <p>Loading...</p>
-                                ) : (
-                                  <div className="flex gap-4 items-center">
-                                    <img src={pokemon?.sprites.front_default ?? ""} alt={pokemon?.name} className="w-16 h-16" />
-                                  </div>
-                                )}
-                                <RebuildCounter descriptor={pokemon?.name ?? ""} />
-                              </button>
+                              <PokemonRow
+                                pokemonName={pokemonName}
+                                selected={pokemonName === selectedPokemon}
+                                onSelect={togglePokmeon}
+                                index={index}
+                                pokemon={pokemon}
+                                pokemonIsLoading={pokemonIsLoading}
+                              />
                             )}
                           </QueryBuilder>
                         ))}
@@ -69,5 +62,43 @@ const Opener: React.FC = () => {
     </div>
   );
 };
+
+interface PokemonRowProps {
+    pokemonName: string;
+    selected: boolean;
+    onSelect: (name: string) => void;
+    index: number;
+    pokemon: any;
+    pokemonIsLoading: boolean;
+}
+
+const PokemonRow = React.memo(
+  ({
+    pokemonName,
+    selected,
+    onSelect,
+    index,
+    pokemon,
+    pokemonIsLoading,
+  }: PokemonRowProps) => (
+    <button
+      onClick={() => onSelect(pokemonName)}
+      className={
+        (selected ? "bg-red-500" : BACKGROUND_COLOURS[index % BACKGROUND_COLOURS.length]) +
+        " flex items-center gap-4 w-fit"
+      }
+    >
+      {pokemonIsLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="flex gap-4 items-center">
+          <img src={pokemon?.sprites.front_default ?? ""} alt={pokemon?.name} className="w-16 h-16" />
+        </div>
+      )}
+      <RebuildCounter descriptor={pokemon?.name ?? ""} />
+    </button>
+  ),
+  (prev, next) => prev.selected === next.selected && prev.pokemon === next.pokemon && prev.pokemonIsLoading === next.pokemonIsLoading
+);
 
 export default Opener;
